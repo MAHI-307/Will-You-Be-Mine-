@@ -14,83 +14,91 @@
 }
 
 body{
-    height:100vh;
-    background: linear-gradient(120deg,#ff9a9e,#fad0c4);
+    min-height:100vh;
+    background: radial-gradient(circle at top, #ffb3c6, #ff758f);
     font-family:'Poppins',sans-serif;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow:hidden;
+    perspective:1200px;
 }
 
 /* floating hearts */
 .heart{
     position:absolute;
-    bottom:-50px;
-    animation: float 7s linear infinite;
-    opacity:0.8;
+    bottom:-60px;
+    animation: float 8s linear infinite;
+    opacity:0.9;
+    filter:drop-shadow(0 0 6px rgba(255,255,255,0.7));
 }
 
 @keyframes float{
-    0%{transform:translateY(0) scale(1);opacity:1;}
-    100%{transform:translateY(-110vh) scale(1.6);opacity:0;}
+    0%{transform:translateY(0) scale(1);}
+    100%{transform:translateY(-120vh) scale(1.8);opacity:0;}
 }
 
-/* card */
+/* 3D card */
 .card{
     position:absolute;
     top:50%;
     left:50%;
-    transform:translate(-50%,-50%);
-    background:rgba(255,255,255,0.25);
-    backdrop-filter:blur(12px);
-    border-radius:22px;
-    padding:40px;
-    width:85%;
-    max-width:520px;
+    transform:translate(-50%,-50%) rotateX(0deg) rotateY(0deg);
+    transform-style:preserve-3d;
+    background:rgba(255,255,255,0.28);
+    backdrop-filter:blur(14px);
+    border-radius:26px;
+    padding:45px;
+    width:88%;
+    max-width:560px;
     text-align:center;
-    box-shadow:0 25px 50px rgba(0,0,0,0.25);
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.35),
+        inset 0 0 20px rgba(255,255,255,0.25);
+    transition:transform 0.2s ease;
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translate(-50%,-60%) scale(0.9);}
+    to{opacity:1;}
 }
 
 h1{
     font-family:'Playfair Display',serif;
-    font-size:36px;
+    font-size:38px;
     color:#7a001f;
     margin-bottom:18px;
+    text-shadow:0 0 10px rgba(255,255,255,0.6);
 }
 
 p{
     font-size:16px;
     color:#4a1c1c;
-    line-height:1.7;
-    margin-bottom:20px;
+    line-height:1.8;
+    margin-bottom:18px;
 }
 
+/* buttons */
 .buttons{
     display:flex;
     justify-content:center;
-    gap:15px;
+    gap:18px;
     margin-top:10px;
 }
 
 button{
-    padding:12px 26px;
+    padding:14px 32px;
     border:none;
-    border-radius:30px;
+    border-radius:35px;
     font-size:15px;
     cursor:pointer;
     transition:0.3s;
-    color:pink;
-}
-
-.yes{
-    background:#7a001f;
-}
-
-.ofcourse{
-    background:#a3002f;
+    color:white;
+    background:linear-gradient(135deg,#7a001f,#c9184a);
+    box-shadow:0 10px 25px rgba(201,24,74,0.6);
 }
 
 button:hover{
-    transform:scale(1.08);
+    transform:translateY(-4px) scale(1.08);
+    box-shadow:0 15px 35px rgba(201,24,74,0.9);
 }
 
 .hidden{
@@ -98,84 +106,90 @@ button:hover{
 }
 
 .final{
-    margin-top:20px;
+    margin-top:25px;
     font-size:18px;
     color:#5c0018;
     font-weight:500;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow{
+    from{text-shadow:0 0 5px #ffccd5;}
+    to{text-shadow:0 0 15px #ff4d6d;}
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="card" id="card">
     <h1>Happy Proposal Day ❤️</h1>
 
     <p>
-        Somewhere between the laughs, the late talks,
+        Somewhere between the laughs, the late talks,  
         and the quiet moments — you became my favorite person.
     </p>
 
     <p>
-        You feel like home to my heart,
+        You feel like home to my heart,  
         and I don’t want a future where you aren’t part of it.
-    </p>    
-        
-    </p> 
-        From random talks to endless smiles,
-        With you, even silence feels warm,<br>
-        and every little moment feels special.
-    </p>
-    
-    </p>
-        So Will You Be My Forever ? 💕
     </p>
 
+    <p>
+        From random talks to endless smiles,  
+        with you even silence feels warm,  
+        and every little moment feels special.
+    </p>
+
+    <p><strong>So will you be my forever? 💕</strong></p>
+
     <div class="buttons">
-        <button class="yes" onclick="answerLove('Yes')">Yes 💕</button>
-        <button class="ofcourse" onclick="answerLove('Of Course')">Of Course 💖</button>
+        <button onclick="answerLove('Yes')">Yes 💕</button>
+        <button onclick="answerLove('Of Course')">Of Course 💖</button>
     </div>
 
     <p class="final hidden" id="finalText"></p>
 </div>
 
 <script>
+/* 3D tilt effect */
+const card=document.getElementById("card");
+
+document.addEventListener("mousemove",(e)=>{
+    const x=(window.innerWidth/2 - e.clientX)/25;
+    const y=(window.innerHeight/2 - e.clientY)/25;
+    card.style.transform=
+        `translate(-50%,-50%) rotateY(${x}deg) rotateX(${y}deg)`;
+});
+
+/* button response */
 function answerLove(choice){
     const text=document.getElementById("finalText");
     text.classList.remove("hidden");
 
-    if(choice==="Yes"){
-        text.innerHTML=
-        "You just made my heart smile 🥹💖<br><br>" +
-        "I promise to care, to listen, and to choose you — every single day.";
-    }else{
-        text.innerHTML=
-        "I knew it… my heart was already yours 💕✨<br><br>" +
-        "Let’s write a beautiful story together, hand in hand.";
-    }
+    text.innerHTML = choice==="Yes"
+        ? "You just made my heart smile 🥹💖<br><br>I promise to choose you — every single day."
+        : "I knew it… my heart was already yours 💕✨<br><br>This is just the beginning of us.";
 
-    for(let i=0;i<25;i++){
-        createHeart();
-    }
+    for(let i=0;i<40;i++) createHeart();
 }
 
+/* floating hearts */
 function createHeart(){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML=Math.random()>0.5?"❤️":"💖";
     heart.style.left=Math.random()*100+"vw";
-    heart.style.fontSize=(18+Math.random()*22)+"px";
-    heart.style.animationDuration=(4+Math.random()*4)+"s";
+    heart.style.fontSize=(16+Math.random()*26)+"px";
+    heart.style.animationDuration=(4+Math.random()*5)+"s";
     document.body.appendChild(heart);
 
-    setTimeout(()=>{heart.remove();},8000);
+    setTimeout(()=>heart.remove(),9000);
 }
 
-setInterval(createHeart,350);
+setInterval(createHeart,400);
 </script>
 
 </body>
 </html>
-
-
 
