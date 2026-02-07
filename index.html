@@ -29,12 +29,13 @@ body{
     100%{transform:translateY(-120vh) scale(1.8);opacity:0}
 }
 
-/* card */
+/* 3D card */
 .card{
     position:absolute;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
+    transform-style:preserve-3d;
     background:rgba(255,255,255,.3);
     backdrop-filter:blur(14px);
     border-radius:26px;
@@ -43,13 +44,10 @@ body{
     max-width:560px;
     text-align:center;
     box-shadow:0 30px 60px rgba(0,0,0,.35);
-    animation:cardIn 1.5s ease;
-}
-@keyframes cardIn{
-    from{opacity:0;transform:translate(-50%,-60%) scale(.9)}
-    to{opacity:1}
+    transition:transform .15s ease;
 }
 
+/* text animations */
 h1{
     font-family:'Playfair Display',serif;
     font-size:38px;
@@ -68,15 +66,20 @@ h1{
 @keyframes typing{to{width:100%}}
 @keyframes blink{50%{border-color:transparent}}
 
-.fade{opacity:0;animation:fadeUp 1.5s ease forwards}
+.fade{
+    opacity:0;
+    animation:fadeUp 1.5s ease forwards;
+}
 .fade.d1{animation-delay:1.5s}
 .fade.d2{animation-delay:3s}
 .fade.d3{animation-delay:4.5s}
+
 @keyframes fadeUp{
     from{opacity:0;transform:translateY(20px)}
-    to{opacity:1}
+    to{opacity:1;transform:none}
 }
 
+/* buttons */
 .buttons{
     display:flex;
     justify-content:center;
@@ -94,8 +97,11 @@ button{
     box-shadow:0 10px 25px rgba(201,24,74,.6);
     transition:.3s;
 }
-button:hover{transform:translateY(-4px) scale(1.08)}
+button:hover{
+    transform:translateY(-4px) scale(1.08);
+}
 
+/* final text */
 .final{
     margin-top:25px;
     font-size:19px;
@@ -110,7 +116,7 @@ button:hover{transform:translateY(-4px) scale(1.08)}
 }
 .hidden{display:none}
 
-/* POPUP */
+/* popup */
 .overlay{
     position:fixed;
     inset:0;
@@ -119,12 +125,10 @@ button:hover{transform:translateY(-4px) scale(1.08)}
     align-items:center;
     justify-content:center;
     z-index:10;
-    animation:fadeIn .8s ease;
 }
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .popup{
-    background:rgba(255,255,255,.95);
+    background:white;
     border-radius:25px;
     padding:35px;
     text-align:center;
@@ -133,11 +137,10 @@ button:hover{transform:translateY(-4px) scale(1.08)}
     animation:popUp 1s ease;
 }
 @keyframes popUp{
-    from{transform:scale(.7) translateY(30px);opacity:0}
+    from{transform:scale(.7);opacity:0}
     to{transform:scale(1);opacity:1}
 }
 
-/* cute girl */
 .girl{
     font-size:80px;
     animation:bounce 2s infinite;
@@ -146,7 +149,8 @@ button:hover{transform:translateY(-4px) scale(1.08)}
     0%,100%{transform:translateY(0)}
     50%{transform:translateY(-10px)}
 }
-.rose{font-size:40px;margin-top:5px}
+
+.rose{font-size:40px;margin:8px 0}
 
 .popup h2{
     margin:15px 0;
@@ -161,7 +165,7 @@ button:hover{transform:translateY(-4px) scale(1.08)}
 <!-- POPUP -->
 <div class="overlay" id="popup">
     <div class="popup">
-        <div class="girl">👩🏻‍❤️</div>
+        <div class="girl">👩🏻</div>
         <div class="rose">🌹</div>
         <h2>Will you be my forever?</h2>
         <div class="buttons">
@@ -176,7 +180,8 @@ button:hover{transform:translateY(-4px) scale(1.08)}
     <h1>Happy Proposal Day ❤️</h1>
 
     <div class="typing">
-        Somewhere between the laughs and late talks, you became my favorite person.
+        Somewhere between the laughs and late talks,
+        You became my favorite person.
     </div>
 
     <p class="fade d1">
@@ -200,27 +205,37 @@ button:hover{transform:translateY(-4px) scale(1.08)}
 </div>
 
 <script>
-/* close popup */
+/* 3D TILT FIX */
+const card = document.getElementById("card");
+
+document.addEventListener("mousemove",(e)=>{
+    const x = (window.innerWidth/2 - e.clientX) / 30;
+    const y = (window.innerHeight/2 - e.clientY) / 30;
+    card.style.transform =
+        `translate(-50%,-50%) rotateY(${x}deg) rotateX(${y}deg)`;
+});
+
+/* popup accept */
 function acceptLove(choice){
     document.getElementById("popup").style.display="none";
     answerLove(choice);
 }
 
-/* response */
+/* final answer */
 function answerLove(choice){
     const text=document.getElementById("finalText");
     text.classList.remove("hidden");
     text.innerHTML = choice==="Yes"
         ? "You just made my heart smile 🥹💖<br><br>I promise to choose you — every single day."
         : "I knew it… my heart was already yours 💕✨<br><br>This is just the beginning of us.";
-    for(let i=0;i<40;i++) createHeart();
+    for(let i=0;i<35;i++) createHeart();
 }
 
 /* hearts */
 function createHeart(){
     const h=document.createElement("div");
     h.className="heart";
-    h.innerHTML=Math.random()>0.5?"❤️":"💖";
+    h.innerHTML=Math.random()>0.5?"❤️🌹🥹":"💕✨💖";
     h.style.left=Math.random()*100+"vw";
     h.style.fontSize=(16+Math.random()*26)+"px";
     h.style.animationDuration=(4+Math.random()*5)+"s";
@@ -232,4 +247,6 @@ setInterval(createHeart,450);
 
 </body>
 </html>
+
+
 
